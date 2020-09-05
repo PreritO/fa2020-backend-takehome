@@ -1,4 +1,5 @@
 from flask import Flask, redirect
+import csv, json
 
 import random
 
@@ -15,8 +16,22 @@ Implement an endpoint `/api/fetch` that returns the contents of `data.csv` as JS
 3) Return the JSON data at the endpoint
 
 """
+# Is this what you were looking for? Is this too simple? 
+def fetchCSV(csvFilePath):
+    data = {}
+    data['employees'] = []
+    with open(csvFilePath) as csvFile:
+        csvReader = csv.DictReader(csvFile)
+        for row in csvReader:
+            first_name = row['first_name']
+            last_name = row['first_name']
+            full_name = first_name + " " + last_name
+            data["employees"].append({'name': full_name, 'timezone': row['time_zone'], 'dept': row['dept']})
+    return json.dumps(data)
 
-# your work here
+@app.route('/api/fetch', methods=['GET'])
+def fetch():
+    return fetchCSV("data.csv")
 
 """
 
